@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/note.dart';
 import '../services/api_service.dart';
+import 'auth_provider.dart';
 
 class NotesProvider with ChangeNotifier {
   bool isLoading = true;
@@ -43,7 +44,8 @@ class NotesProvider with ChangeNotifier {
   }
 
   void fatchNotes() async {
-    notes = await ApiService.fatchNote(userid: 'ador');
+    notes = await ApiService.fatchNote(
+        userid: AuthProvider().firebaseAuth.currentUser!.uid);
     sortNotes();
     isLoading = false;
     notifyListeners();

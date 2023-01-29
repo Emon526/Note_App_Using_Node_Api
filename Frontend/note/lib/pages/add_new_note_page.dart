@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/note.dart';
+import '../providers/auth_provider.dart';
 import '../providers/notes_provider.dart';
 
 class AddNewNotePage extends StatefulWidget {
@@ -25,7 +26,7 @@ class _AddNewNotePageState extends State<AddNewNotePage> {
   void addNewNote() {
     Note newNote = Note(
       id: const Uuid().v1(),
-      userid: 'ador',
+      userid: context.read<AuthProvider>().firebaseAuth.currentUser!.uid,
       title: titleController.text.trim(),
       content: contentController.text.trim(),
       dateAdded: DateTime.now(),

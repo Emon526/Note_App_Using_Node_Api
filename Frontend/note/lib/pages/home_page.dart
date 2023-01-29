@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../models/note.dart';
+import '../providers/auth_provider.dart';
 import '../providers/notes_provider.dart';
 import 'add_new_note_page.dart';
 
@@ -16,6 +16,13 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Note"),
         centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () {
+                AuthProvider().signOut();
+              },
+              icon: const Icon(Icons.logout_outlined))
+        ],
       ),
       body: notesprovider.isLoading
           ? const Center(
