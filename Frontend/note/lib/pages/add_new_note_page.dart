@@ -1,36 +1,71 @@
 import 'package:flutter/material.dart';
-import 'package:note/models/note.dart';
-import 'package:note/providers/notes_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
-class AddNewNotePage extends StatelessWidget {
-  const AddNewNotePage({super.key});
+import '../models/note.dart';
+import '../providers/notes_provider.dart';
+
+class AddNewNotePage extends StatefulWidget {
+  final bool isUpdate;
+  final Note? note;
+  const AddNewNotePage({
+    super.key,
+    required this.isUpdate,
+    this.note,
+  });
+
+  @override
+  State<AddNewNotePage> createState() => _AddNewNotePageState();
+}
+
+class _AddNewNotePageState extends State<AddNewNotePage> {
+  final titleController = TextEditingController();
+  final contentController = TextEditingController();
+  final notefocus = FocusNode();
+  void addNewNote() {
+    Note newNote = Note(
+      id: const Uuid().v1(),
+      userid: 'ador',
+      title: titleController.text.trim(),
+      content: contentController.text.trim(),
+      dateAdded: DateTime.now(),
+    );
+
+    context.read<NotesProvider>().addNote(note: newNote);
+    Navigator.pop(context);
+  }
+
+  void updateNote() {
+    widget.note!.title = titleController.text;
+    widget.note!.content = contentController.text;
+    context.read<NotesProvider>().updateNote(note: widget.note!);
+    Navigator.pop(context);
+  }
+
+  @override
+  void initState() {
+    if (widget.isUpdate) {
+      titleController.text = widget.note!.title!;
+      contentController.text = widget.note!.content!;
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    contentController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final titleController = TextEditingController();
-    final contentController = TextEditingController();
-    final notefocus = FocusNode();
-    void addNote() {
-      Note newNote = Note(
-        id: const Uuid().v1(),
-        userid: 'ador',
-        title: titleController.text.trim(),
-        content: contentController.text.trim(),
-        dateAdded: DateTime.now(),
-      );
-
-      context.read<NotesProvider>().addNote(note: newNote);
-      Navigator.pop(context);
-    }
-
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
               onPressed: () {
-                addNote();
+                widget.isUpdate ? updateNote() : addNewNote();
               },
               icon: const Icon(Icons.check))
         ],
@@ -50,7 +85,7 @@ class AddNewNotePage extends StatelessWidget {
                   notefocus.requestFocus();
                 }
               },
-              autofocus: true,
+              autofocus: widget.isUpdate ? false : true,
               style: const TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
