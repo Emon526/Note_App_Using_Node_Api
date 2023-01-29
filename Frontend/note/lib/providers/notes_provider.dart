@@ -5,6 +5,14 @@ import '../services/api_service.dart';
 
 class NotesProvider with ChangeNotifier {
   bool isLoading = true;
+  String _searchString = '';
+  String get searchString => _searchString;
+
+  set searchString(String searchString) {
+    _searchString = searchString;
+    notifyListeners();
+  }
+
   List<Note> notes = [];
   NotesProvider() {
     fatchNotes();
@@ -43,5 +51,19 @@ class NotesProvider with ChangeNotifier {
 
   void sortNotes() {
     notes.sort((a, b) => b.dateAdded!.compareTo(a.dateAdded!));
+  }
+
+  List<Note> getFilteredNotes({required String searchQuery}) {
+    return notes
+        .where(
+          (element) =>
+              element.title!
+                  .toLowerCase()
+                  .contains(searchQuery.toLowerCase()) ||
+              element.content!
+                  .toLowerCase()
+                  .contains(searchQuery.toLowerCase()),
+        )
+        .toList();
   }
 }
