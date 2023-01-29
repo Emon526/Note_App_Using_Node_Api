@@ -17,72 +17,77 @@ class HomePage extends StatelessWidget {
         title: const Text("Note"),
         centerTitle: true,
       ),
-      body: SafeArea(
-        child: notesprovider.notes.isEmpty
-            ? const Center(child: Text("No Notes yet "))
-            : GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                ),
-                itemCount: notesprovider.notes.length,
-                itemBuilder: (context, index) {
-                  Note currentNote = notesprovider.notes[index];
-                  return GestureDetector(
-                    onTap: () {
-                      //Update
+      body: notesprovider.isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : SafeArea(
+              child: notesprovider.notes.isEmpty
+                  ? const Center(child: Text("No Notes yet "))
+                  : GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                      ),
+                      itemCount: notesprovider.notes.length,
+                      itemBuilder: (context, index) {
+                        Note currentNote = notesprovider.notes[index];
+                        return GestureDetector(
+                          onTap: () {
+                            //Update
 
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (context) => AddNewNotePage(
-                            isUpdate: true,
-                            note: currentNote,
-                          ),
-                        ),
-                      );
-                    },
-                    onLongPress: () {
-                      //Delete
-                      notesprovider.deleteNote(note: currentNote);
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.all(5),
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: Colors.grey,
-                            width: 2,
-                          )),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            currentNote.title!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) => AddNewNotePage(
+                                  isUpdate: true,
+                                  note: currentNote,
+                                ),
+                              ),
+                            );
+                          },
+                          onLongPress: () {
+                            //Delete
+                            notesprovider.deleteNote(note: currentNote);
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: Colors.grey,
+                                  width: 2,
+                                )),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  currentNote.title!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Text(
+                                  currentNote.content!,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 5,
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.grey[700]),
+                                ),
+                              ],
                             ),
                           ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Text(
-                            currentNote.content!,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 5,
-                            style: TextStyle(
-                                fontSize: 18, color: Colors.grey[700]),
-                          ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-      ),
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(

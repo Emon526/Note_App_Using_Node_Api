@@ -38,6 +38,7 @@ class _AddNewNotePageState extends State<AddNewNotePage> {
   void updateNote() {
     widget.note!.title = titleController.text;
     widget.note!.content = contentController.text;
+    widget.note!.dateAdded = DateTime.now();
     context.read<NotesProvider>().updateNote(note: widget.note!);
     Navigator.pop(context);
   }
